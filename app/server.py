@@ -1,6 +1,7 @@
 from enum import Enum
-from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from typing import Optional
+from fastapi import FastAPI, status
+from fastapi.responses import RedirectResponse, Response
 
 app = FastAPI()
 
@@ -21,14 +22,37 @@ async def redirect_root_to_docs():
 #     return {"message": "All blogs in the database"}
 
 
-@app.get("/blog/all")
-async def get_all_blogs(limit: int = 10, published: bool = True):
-    return {"message": f"Blog with limit {limit} and published {published}"}
+# @app.get("/blog/all")
+# async def get_all_blogs(limit: int = 10, published: bool = True):
+#     return {"message": f"Blog with limit {limit} and published {published}"}
 
 
-@app.get("/blog/{id}")
-async def get_blog(id: int):
-    return {"message": f"Blog with id {id} "}
+@app.get(
+    "/blog/all",
+    summary="Retrieve All Blogs",
+    description="This API retrieves all blogs from the database",
+    response_description="The list of all available blogs",
+)
+async def get_all_blogs(page: int = 1, page_size: Optional[int] = None):
+    return {"message": f"Blog with page {page} and page_size {page_size}"}
+
+
+@app.get("/blog/{id}", status_code=status.HTTP_200_OK)
+async def get_blog(id: int, response: Response):
+    if id > 10:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"message": "Blog not found!"}
+    return {"message": f"Blog with id {id}"}
+
+
+@app.get("/blog/{id}/comments/{comment_id}")
+async def get_comment(
+    id: int, comment_id: int, valid: bool = True, username: Optional[str] = None
+):
+    """Retrieve a comment with id from a blog with id"""
+    return {
+        "message": f"Comment with id {comment_id} from blog with id {id} is valid: {valid} and username: {username}"
+    }
 
 
 @app.get("/blog/type/{type}")
