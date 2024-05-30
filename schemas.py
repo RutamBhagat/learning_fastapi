@@ -9,7 +9,7 @@ class Blog(BaseModel):
     published: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class UserBase(BaseModel):
@@ -24,7 +24,7 @@ class UserDisplay(BaseModel):
     blogs: List[Blog] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 # User inside BlogDisplay
@@ -33,7 +33,7 @@ class User(BaseModel):
     username: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class BlogBase(BaseModel):
@@ -50,4 +50,4 @@ class BlogDisplay(BaseModel):
     user: User
 
     class Config:
-        orm_mode = True
+        from_attributes = True
