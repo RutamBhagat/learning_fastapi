@@ -1,5 +1,6 @@
-from fastapi import FastAPI, HTTPException, Request, status
-from fastapi.responses import RedirectResponse, JSONResponse, PlainTextResponse
+from fastapi import FastAPI, Request, status
+from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from db import models
 from db.database import engine
 from app.routers.blog import blog
@@ -19,6 +20,14 @@ app.include_router(blog.router)
 app.include_router(get_blog.router)
 app.include_router(post_blog.router)
 app.include_router(product.router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(StoryException)
