@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from db import models
 from db.database import engine
+from app.routers.blog import blog
 from app.routers.blog import get_blog
 from app.routers.blog import post_blog
 from app.routers.user import user
@@ -12,6 +13,7 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 app.include_router(user.router)
+app.include_router(blog.router)
 app.include_router(get_blog.router)
 app.include_router(post_blog.router)
 
