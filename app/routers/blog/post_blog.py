@@ -69,3 +69,7 @@ def create_comment(
         Remarks: {remarks} 
         Versions: {v}"""
     }
+
+
+def required_functionality():
+    return {"message": "Learning FastAPI is fun!"}
