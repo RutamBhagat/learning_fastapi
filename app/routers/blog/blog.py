@@ -22,6 +22,7 @@ async def create_blog(request: BlogBase, db: Session = Depends(get_db)):
 async def get_blog(
     id: int, token: str = Depends(oauth2_schema), db: Session = Depends(get_db)
 ):
+    print("token", token)
     return db_blog.get_blog(db, id)
 
 
