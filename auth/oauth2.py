@@ -7,7 +7,7 @@ from jose import jwt
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="/token")
 
 # SECRET_KEY = os.environ.get("SECRET_KEY")
-SECRET_KEY = "CBFsGJJTXXFKi729i7kNKtHoHHNfY4w6eKoUlbaWbHE="
+SECRET_KEY = "YOUR SUPER SECRET KEY"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
