@@ -1,27 +1,21 @@
 [tool.poetry]
-name = "temp"
+name = "fastapi-practice"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["RutamBhagat <rutambhagat@gmail.com>"]
 readme = "README.md"
-packages = [
-    { include = "app" },
-]
+packages = [{include = "fastapi_practice"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-uvicorn = "^0.23.2"
-pydantic = "<2"
 fastapi = "^0.111.0"
+uvicorn = "^0.30.0"
 sqlalchemy = "^2.0.30"
 passlib = "^1.7.4"
 bcrypt = "^4.1.3"
-python-dotenv = "^1.0.1"
+python-multipart = "^0.0.9"
 python-jose = "^3.3.0"
-jwt = "^1.3.1"
 
-
-[tool.poetry.group.dev.dependencies]
 
 [build-system]
 requires = ["poetry-core"]
