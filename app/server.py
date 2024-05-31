@@ -1,17 +1,18 @@
-from typing import Optional
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
-from app.router import blog_get, blog_post, user, article, product
-from app.auth import authentication
-from app.db.database import engine
-from app.db import models
-from app.exceptions import StoryException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from app.db.database import engine
+from app.db import models
+from app.router import blog_get, blog_post, user, article, product, file
+from app.auth import authentication
+from app.exceptions import StoryException
 
 
 app = FastAPI()
 app.include_router(authentication.router)
+app.include_router(file.router)
 app.include_router(user.router)
 app.include_router(article.router)
 app.include_router(product.router)
@@ -45,3 +46,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/app/files", StaticFiles(directory="app/files"), name="files")
