@@ -3,11 +3,10 @@ from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from db import models
 from db.database import engine
-from app.routers.blog import blog
-from app.routers.blog import get_blog
-from app.routers.blog import post_blog
+from app.routers.blog import blog, get_blog, post_blog
 from app.routers.user import user
 from app.routers import product
+from auth import authentication
 from exceptions import StoryException
 
 
@@ -20,6 +19,7 @@ app.include_router(blog.router)
 app.include_router(get_blog.router)
 app.include_router(post_blog.router)
 app.include_router(product.router)
+app.include_router(authentication.router)
 
 origins = ["http://localhost:3000"]
 

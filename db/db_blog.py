@@ -19,6 +19,7 @@ def create_blog(db: Session, request: BlogBase):
         published=request.published,
         user_id=request.user_id,
     )
+    print("new blog", new_blog)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
