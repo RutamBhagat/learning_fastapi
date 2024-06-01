@@ -1,10 +1,19 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, Request
 
+from app.db.hash import Hash
+
 router = APIRouter(
     prefix="/dependencies",
     tags=["dependencies"],
 )
+
+
+class Account:
+    def __init__(self, name: str, email: str, password: str):
+        self.name = name
+        self.email = email
+        self.password = Hash.bcrypt(password)
 
 
 def convert_headers(request: Request, seperator: str = "--"):
@@ -25,3 +34,15 @@ async def create_item(seperator: str = "-->", headers=Depends(convert_headers)):
     # default parameter values it shows "--" instead of "-->"
     # but when provided manually it works fine
     return {"result": "New item created", "headers": headers}
+
+
+@router.post("/user")
+def create_user(
+    name: str, email: str, password: str, account: Account = Depends(Account)
+):
+    # account - perform whatever operations you need to do with the account
+    return {
+        "name": account.name,
+        "email": account.email,
+        "password": account.password,
+    }
