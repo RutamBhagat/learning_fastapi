@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket
 from fastapi.responses import RedirectResponse
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from app.db.database import engine
 from app.db import models
 from app.middlewares import time_middleware
@@ -10,6 +11,7 @@ from app.router import blog_get, blog_post, user, article, product, file
 from app.templates import templates
 from app.auth import authentication
 from app.exceptions import StoryException
+from app.client import html
 
 
 app = FastAPI()
@@ -46,9 +48,27 @@ app.mount("/static", StaticFiles(directory="app/templates/static"), name="static
 
 # Endpoints
 # redirect from / to /docs using fastapi redirect
+# @app.get("/")
+# async def root():
+#     return RedirectResponse(url="/docs")
+
+
 @app.get("/")
-async def root():
-    return RedirectResponse(url="/docs")
+async def get_html():
+    return HTMLResponse(html)
+
+
+clients = []
+
+
+@app.websocket("/chat")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    clients.append(websocket)
+    while True:
+        data = await websocket.receive_text()
+        for client in clients:
+            await client.send_text(data)
 
 
 # Exceptions
