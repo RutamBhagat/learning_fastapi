@@ -1,6 +1,6 @@
 from app.db.hash import Hash
 from sqlalchemy.orm.session import Session
-from app.schemas import UserBase
+from app.db.schemas import UserBase
 from app.db.models import DbUser
 from fastapi import HTTPException, status
 

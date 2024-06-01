@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from app.db.database import engine
 from app.db import models
-from app.middlewares import time_middleware
+from app.middlewares.middlewares import time_middleware
 from app.router import blog_get, blog_post, user, article, product, file, dependencies
 from app.templates import templates
 from app.auth import authentication

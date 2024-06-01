@@ -1,7 +1,7 @@
 from app.exceptions import StoryException
 from sqlalchemy.orm.session import Session
 from app.db.models import DbArticle
-from app.schemas import ArticleBase
+from app.db.schemas import ArticleBase
 from fastapi import HTTPException, status
 
 
