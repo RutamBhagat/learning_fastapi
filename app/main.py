@@ -1,4 +1,3 @@
-import time
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.responses import JSONResponse
@@ -15,6 +14,9 @@ from app.exceptions import StoryException
 
 app = FastAPI()
 
+# Create a database connection
+models.Base.metadata.create_all(engine)
+
 # Routes
 app.include_router(authentication.router)
 app.include_router(file.router)
@@ -26,15 +28,30 @@ app.include_router(blog_post.router)
 app.include_router(templates.router)
 
 # Middlewares
-app.middleware("http")(time_middleware)
+origins = ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.middleware("http")(time_middleware)  # this needs to be different from the one above
 
 
+# Mount the static files directory
+app.mount("/app/files", StaticFiles(directory="app/files"), name="files")
+app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
+
+
+# Endpoints
 # redirect from / to /docs using fastapi redirect
 @app.get("/")
 async def root():
     return RedirectResponse(url="/docs")
 
 
+# Exceptions
 @app.exception_handler(StoryException)
 def story_exception_handler(request: Request, exc: StoryException):
     return JSONResponse(status_code=418, content={"detail": exc.name})
@@ -44,26 +61,9 @@ def story_exception_handler(request: Request, exc: StoryException):
 # def custom_handler(request: Request, exc: StoryException):
 #   return PlainTextResponse(str(exc), status_code=400)
 
-models.Base.metadata.create_all(engine)
-
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Mount the static files directory
-app.mount("/app/files", StaticFiles(directory="app/files"), name="files")
-app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
-
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-# start command for deployment on render
-# uvicorn app.main:app --host 0.0.0.0 --port 8000
+    # start command for deployment on render
+    # uvicorn app.main:app --host 0.0.0.0 --port 8000
