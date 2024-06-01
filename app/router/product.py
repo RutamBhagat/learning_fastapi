@@ -1,6 +1,6 @@
 import time
 from typing import Optional, List
-from fastapi import APIRouter, Header, Cookie, Form
+from fastapi import APIRouter, BackgroundTasks, Header, Cookie, Form
 from fastapi.responses import Response, HTMLResponse, PlainTextResponse
 from custom_log import log
 
@@ -9,9 +9,9 @@ router = APIRouter(prefix="/product", tags=["product"])
 products = ["watch", "camera", "phone"]
 
 
-async def time_consuming_functionality():
-    time.sleep(10)
-    print("Time consuming function called")
+async def time_consuming_functionality(message: str, delay: int = 1):
+    time.sleep(delay)
+    print(f"{message} that took {delay} seconds")
     return "ok"
 
 
@@ -22,8 +22,11 @@ def create_product(name: str = Form(...)):
 
 
 @router.get("/all")
-async def get_all_products():
-    await time_consuming_functionality()
+async def get_all_products(bt: BackgroundTasks):
+    # await time_consuming_functionality()
+    bt.add_task(
+        time_consuming_functionality, message="Time consuming function called", delay=10
+    )
     log(tag="MyAPI", message="Call to get all products")
     data = " ".join(products)
     response = Response(content=data, media_type="text/plain")
