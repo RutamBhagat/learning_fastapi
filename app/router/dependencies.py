@@ -15,15 +15,17 @@ class Account:
         self.password = Hash.bcrypt(password)
 
 
-def convert_params(request: Request, seperator: str = "--"):
-    query = []
+def multi_level_dependency_func(request: Request, seperator: str = "--"):
+    headers = []
     for key, value in request.headers.items():
-        query.append(f"{key} {seperator} {value}")
-    return query
+        headers.append(f"{key} {seperator} {value}")
+    return headers
 
 
 def convert_headers(
-    request: Request, seperator: str = "--", multi_dependency=Depends(convert_params)
+    request: Request,
+    seperator: str = "--",
+    multi_dependency=Depends(multi_level_dependency_func),
 ):
     return multi_dependency
 
