@@ -1,1 +1,5 @@
 MyAPI: Call to get all products
+MyApp: Hello
+URL: http://localhost:8000/dependencies/?tag=MyApp&message=Hello&seperator=%40%40%40%40%40
+MyApp: Hello
+URL: http://localhost:8000/dependencies/user?name=rutam&email=rutambhagat%40gmail.com&password=hellsguardian&tag=MyApp&message=Hello

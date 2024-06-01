@@ -1,10 +1,9 @@
-from typing import Optional
 from fastapi import APIRouter, Depends, Request
 from app.db.hash import Hash
+from custom_log import log
 
 router = APIRouter(
-    prefix="/dependencies",
-    tags=["dependencies"],
+    prefix="/dependencies", tags=["dependencies"], dependencies=[Depends(log)]
 )
 
 
