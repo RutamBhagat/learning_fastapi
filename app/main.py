@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse
 from app.db.database import engine
 from app.db import models
 from app.middlewares import time_middleware
-from app.router import blog_get, blog_post, user, article, product, file
+from app.router import blog_get, blog_post, user, article, product, file, dependencies
 from app.templates import templates
 from app.auth import authentication
 from app.exceptions import StoryException
@@ -28,6 +28,7 @@ app.include_router(product.router)
 app.include_router(blog_get.router)
 app.include_router(blog_post.router)
 app.include_router(templates.router)
+app.include_router(dependencies.router)
 
 # Middlewares
 origins = ["*"]
