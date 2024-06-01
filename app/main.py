@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.db.database import engine
 from app.db import models
+from app.middlewares import time_middleware
 from app.router import blog_get, blog_post, user, article, product, file
 from app.templates import templates
 from app.auth import authentication
@@ -13,6 +14,8 @@ from app.exceptions import StoryException
 
 
 app = FastAPI()
+
+# Routes
 app.include_router(authentication.router)
 app.include_router(file.router)
 app.include_router(user.router)
@@ -21,6 +24,9 @@ app.include_router(product.router)
 app.include_router(blog_get.router)
 app.include_router(blog_post.router)
 app.include_router(templates.router)
+
+# Middlewares
+app.middleware("http")(time_middleware)
 
 
 # redirect from / to /docs using fastapi redirect
@@ -39,19 +45,6 @@ def story_exception_handler(request: Request, exc: StoryException):
 #   return PlainTextResponse(str(exc), status_code=400)
 
 models.Base.metadata.create_all(engine)
-
-
-# A middleware that tracks time taken for each request
-@app.middleware("http")
-async def time_middleware(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    end_time = time.time()
-    duration = end_time - start_time
-    print(f"Request took {duration} seconds")
-    response.headers["X-Response-Time"] = str(duration)
-    return response
-
 
 origins = ["*"]
 
