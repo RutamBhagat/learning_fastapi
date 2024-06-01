@@ -37,7 +37,7 @@ def story_exception_handler(request: Request, exc: StoryException):
 
 models.Base.metadata.create_all(engine)
 
-origins = ["http://localhost:3000"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
