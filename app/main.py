@@ -1,3 +1,4 @@
+import time
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from fastapi.responses import JSONResponse
@@ -38,6 +39,19 @@ def story_exception_handler(request: Request, exc: StoryException):
 #   return PlainTextResponse(str(exc), status_code=400)
 
 models.Base.metadata.create_all(engine)
+
+
+# A middleware that tracks time taken for each request
+@app.middleware("http")
+async def time_middleware(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    end_time = time.time()
+    duration = end_time - start_time
+    print(f"Request took {duration} seconds")
+    response.headers["X-Response-Time"] = str(duration)
+    return response
+
 
 origins = ["*"]
 
