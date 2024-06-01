@@ -61,19 +61,23 @@ async def get_html():
 clients = []
 
 
-@app.websocket("/chat")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    clients.append(websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            for client in clients:
-                await client.send_text(data)
-    except WebSocketDisconnect:
-        clients.remove(websocket)
-        if not websocket.client_state.DISCONNECTED:
-            await websocket.close()
+## This is causing a deployment problem with render but the code works locally
+## Deploy failed for 4187595: handle websocket disconnection
+## Timed out
+## Port scan timeout reached, no open ports detected. Bind your service to at least one port. If you don't need to receive traffic on any port, create a background worker instead.
+# @app.websocket("/chat")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     clients.append(websocket)
+#     try:
+#         while True:
+#             data = await websocket.receive_text()
+#             for client in clients:
+#                 await client.send_text(data)
+#     except WebSocketDisconnect:
+#         clients.remove(websocket)
+#         if not websocket.client_state.DISCONNECTED:
+#             await websocket.close()
 
 
 # Exceptions
