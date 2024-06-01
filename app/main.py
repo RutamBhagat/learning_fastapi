@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from app.db.database import engine
 from app.db import models
 from app.router import blog_get, blog_post, user, article, product, file
+from app.templates import templates
 from app.auth import authentication
 from app.exceptions import StoryException
 
@@ -18,6 +19,7 @@ app.include_router(article.router)
 app.include_router(product.router)
 app.include_router(blog_get.router)
 app.include_router(blog_post.router)
+app.include_router(templates.router)
 
 
 # redirect from / to /docs using fastapi redirect
@@ -47,7 +49,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Mount the static files directory
 app.mount("/app/files", StaticFiles(directory="app/files"), name="files")
+app.mount("/static", StaticFiles(directory="app/templates/static"), name="static")
 
 if __name__ == "__main__":
     import uvicorn
