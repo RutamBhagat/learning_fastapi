@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, WebSocket
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import RedirectResponse
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -65,10 +65,15 @@ clients = []
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     clients.append(websocket)
-    while True:
-        data = await websocket.receive_text()
-        for client in clients:
-            await client.send_text(data)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            for client in clients:
+                await client.send_text(data)
+    except WebSocketDisconnect:
+        clients.remove(websocket)
+        if not websocket.client_state.DISCONNECTED:
+            await websocket.close()
 
 
 # Exceptions
