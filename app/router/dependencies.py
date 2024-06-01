@@ -1,6 +1,5 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, Request
-
 from app.db.hash import Hash
 
 router = APIRouter(
@@ -16,11 +15,17 @@ class Account:
         self.password = Hash.bcrypt(password)
 
 
-def convert_headers(request: Request, seperator: str = "--"):
-    out_headers = []
+def convert_params(request: Request, seperator: str = "--"):
+    query = []
     for key, value in request.headers.items():
-        out_headers.append(f"{key} {seperator} {value}")
-    return out_headers
+        query.append(f"{key} {seperator} {value}")
+    return query
+
+
+def convert_headers(
+    request: Request, seperator: str = "--", multi_dependency=Depends(convert_params)
+):
+    return multi_dependency
 
 
 @router.get("/")
@@ -30,17 +35,12 @@ async def get_items(headers=Depends(convert_headers)):
 
 @router.post("/new")
 async def create_item(seperator: str = "-->", headers=Depends(convert_headers)):
-    # NOTE: The seperator is kind of flaky in swagger docs
-    # default parameter values it shows "--" instead of "-->"
-    # but when provided manually it works fine
     return {"result": "New item created", "headers": headers}
 
 
 @router.post("/user")
-def create_user(
-    name: str, email: str, password: str, account: Account = Depends(Account)
-):
-    # account - perform whatever operations you need to do with the account
+def create_user(name: str, email: str, password: str, account: Account = Depends()):
+    # Use the account dependency to perform you operations
     return {
         "name": account.name,
         "email": account.email,
